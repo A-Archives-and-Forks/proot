@@ -38,6 +38,8 @@ Fixed
 - Assorted CodeQL/SonarCloud findings: unchecked write_data() return in
   the portmap extension, deprecated bzero, an invalid %z format
   specifier, and stale comments
+- Static release build failing to link proot/care due to the Python
+  extension and libarchive's transitive static dependencies
 
 5.4.0 - 2023-05-13
 ------------------
