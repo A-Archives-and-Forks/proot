@@ -40,7 +40,13 @@ CFLAGS   += $(shell pkg-config --cflags talloc)
 LDFLAGS  += -Wl,-z,noexecstack
 LDFLAGS  += $(shell pkg-config --libs talloc)
 
+ifneq ($(findstring -static,$(LDFLAGS)),)
+CARE_LDFLAGS  = -Wl,--start-group $(shell pkg-config --libs --static libarchive) \
+                $(shell pkg-config --exists libxml-2.0 && pkg-config --libs --static libxml-2.0) \
+                -lm -lstdc++ -Wl,--end-group
+else
 CARE_LDFLAGS  = $(shell pkg-config --libs libarchive)
+endif
 
 OBJECTS += \
 	cli/cli.o		\
