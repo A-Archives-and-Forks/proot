@@ -41,8 +41,16 @@ jobs:
 
       - name: Build static proot and care binaries
         run: |
-          make -C src clean loader.elf loader-m32.elf build.h
-          LDFLAGS="${LDFLAGS} -static" make -C src proot care
+          # HAS_SWIG/HAS_PYTHON_CONFIG override: swig and python3-config
+          # are preinstalled on GitHub's ubuntu-latest runners regardless
+          # of what this workflow apt-get installs, which silently
+          # re-enables proot's optional Python extension. Its static
+          # dependencies (Ubuntu's libpython3.a) don't resolve under
+          # -static, so force it off explicitly rather than relying on
+          # the tools being absent. Must be passed to both invocations:
+          # build.h bakes in HAVE_PYTHON_EXTENSION from the first one.
+          make -C src clean loader.elf loader-m32.elf build.h HAS_SWIG= HAS_PYTHON_CONFIG=
+          LDFLAGS="${LDFLAGS} -static" make -C src proot care HAS_SWIG= HAS_PYTHON_CONFIG=
 
       - name: Verify the embedded version string matches the tag
         run: |
